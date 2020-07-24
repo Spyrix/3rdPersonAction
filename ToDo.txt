@@ -1,0 +1,43 @@
+--3D Vertical Metroidvania
+Hero awakes from cryosleep on a crashed space station that's barely functional?
+
+Themes of rebirth, transhumanism...
+
+Places for a metroidvania game? Anything with chunkable rooms, nice vertical and horizontal spaces to play around in:
+spaceship, castle, cruiseship, a city (would have to be almost cyberpunk esque)...
+
+A plague has ravaged the world. Humans live in isolated areas, alone, afraid to leave the safety of their homes.
+The plague has convinced a lot of people to become more machine than human. Less organics, less chance that they'll be infected.
+An overreliance on technology combined with the isolation has caused people to retreat into smaller and smaller ecologies, more concerned with the hum of their machines than other people, or the outside.
+Economic progress needs to move on, however, at the cost of anything. Capitalism and the comodification of people 
+A scrapper is investigating the ruins of the old city, dejected and forlorn, wanting only genuine human contact. Their body is mostly human
+
+Weapon mechanic: A mechanical arm whip that would let you pick up objects and throw at enemies to knock off armor, to expose weak points? Also doubles as a grapple.
+	Small enemies can be defeated by whipping their armor off and whipping them again. Bigger enemies can only be defeated by knocking armor off with objects or other enemies and then attacking them again.
+
+Implement walking up ramps and stairs
+Implement climbing
+	--create playerclimbing state, enterable if the player is 
+	--Use colliders to determine if a player still has a climbable object infront of them.
+	--If they do, enter climbing state.
+	--On entering the state, position player at a constant positon around the climbable object (adjust height)
+	--ledges are objects that work as a network. Each ledge knows the ledges around it
+	--When movement input is given, move//interpolate the player to the next node in the network. 
+Implement wall sliding
+Implement mid air dash
+Implement multi jump
+
+How to solve issue of objects obscuring view of player?
+
+
+TO DO:
+Unit testing
+Snappable terrain
+Use delegates and events
+
+MECHANIC IDEAS:
+
+
+BUGS:
+
+Everything needs to be a little faster, tbh
