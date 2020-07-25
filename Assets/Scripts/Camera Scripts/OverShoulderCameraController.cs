@@ -9,25 +9,27 @@ public class OverShoulderCameraController : MonoBehaviour
 
     internal PlayerInputActions inputAction;
     private Vector3 velocity = Vector3.zero;
+    [SerializeField]
     internal float smoothTime;
+    [SerializeField]
     internal float rotateSpeed;
-    internal float rotationAngleZ;
-    internal float rotationAngleY;
+    [SerializeField]
+    internal float maxRotationAngle;
+
     Vector2 rotateInput;
     Vector2 cameraMoveInput;
     void Awake()
     {
-        smoothTime = .10f;
-        rotateSpeed = 20f;
+        smoothTime = .05f;
+        rotateSpeed = 7f;
+        maxRotationAngle = 20f;
         inputAction = new PlayerInputActions();
         //Setup input for horizontal movement value press
         inputAction.PlayerControls.RotateCamera.performed += ctx => rotateInput = ctx.ReadValue<Vector2>();
         //Setup input for horizontal movement release
         inputAction.PlayerControls.RotateCamera.canceled += ctx => rotateInput = ctx.ReadValue<Vector2>();
         //Setup input for horizontal movement value press
-        inputAction.PlayerControls.MoveCamera.performed += ctx => cameraMoveInput = ctx.ReadValue<Vector2>();
-        //Setup input for horizontal movement release
-        inputAction.PlayerControls.MoveCamera.canceled += ctx => cameraMoveInput = ctx.ReadValue<Vector2>();
+
     }
 
     //OnEnable and OnDisable are required for the inputAction class to work
@@ -44,26 +46,39 @@ public class OverShoulderCameraController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        FollowPlayer();
-        RotateCamera();
+        MoveCamera();
+        RotateCameraVertical();
     }
 
-
-    void FollowPlayer()
+    void MoveCamera()
     {
-        //This camera is always locked into place
-        if (transform.position != shoulderPosition.transform.position)
+        transform.position = Vector3.SmoothDamp(transform.position, shoulderPosition.transform.position, ref velocity, smoothTime);
+    }
+
+    internal void AttachToPlayer()
+    {
+        transform.parent = shoulderPosition.transform;
+        //ensures that the camera is looking in the direction of the player
+        transform.forward = shoulderPosition.transform.forward;
+    }
+
+    internal void RotateCameraVertical()
+    {
+        Quaternion r = transform.rotation;
+        Quaternion newRotation = new Quaternion();
+        if (rotateInput.y != 0f) {
+            float delta = maxRotationAngle * -rotateInput.y;
+            newRotation.eulerAngles = new Vector3(delta, r.eulerAngles.y, r.eulerAngles.z);
+            transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotateSpeed);
+        }
+        else
         {
-            transform.position = Vector3.SmoothDamp(transform.position, shoulderPosition.transform.position, ref velocity, smoothTime);
+            newRotation.eulerAngles = new Vector3(0, r.eulerAngles.y, r.eulerAngles.z);
+            transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.fixedDeltaTime * rotateSpeed);
         }
     }
-
-    void RotateCamera()
+        internal void FreeCamera()
     {
-        rotationAngleY = 90 * rotateInput.y;
-        rotationAngleZ = 90 * rotateInput.x;
-        Quaternion q = new Quaternion();
-        q.eulerAngles = new Vector3(0,rotationAngleY,rotationAngleZ);
-        transform.rotation = Quaternion.Lerp(transform.rotation, q, Time.time*rotateSpeed*rotateInput.magnitude);
+        transform.parent = null;
     }
 }

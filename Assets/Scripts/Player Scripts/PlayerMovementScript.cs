@@ -11,6 +11,8 @@ public class PlayerMovementScript : MonoBehaviour
     float maxJumpHeight = 2f;
     [SerializeField]
     float movementSpeed = 1f;
+    [SerializeField]
+    float rotationSpeed;
     //[SerializeField]
     //float turnSpeed = 100f;
     [SerializeField]
@@ -20,12 +22,9 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField]
     float dashTimerMax;
 
-    float jumpTimer;
-    float jumpTimerMax;
-
     internal RaycastHit hitInfo;
 
-    float maxGroundAngle = 120f;
+    //float maxGroundAngle = 120f;
     [SerializeField]
     float groundAngle;
     [SerializeField]
@@ -54,8 +53,7 @@ public class PlayerMovementScript : MonoBehaviour
         //init constants
         dashTimerMax = .25f;
         dashSpeed = 15f;
-        movementSpeed = 5f;
-        jumpTimerMax = 2f;
+        rotationSpeed = 10f;
     }
 
     // Update is called once per frame
@@ -76,7 +74,25 @@ public class PlayerMovementScript : MonoBehaviour
         //Debug.Log(calculatedForward);
     }
 
-    internal void RotatePlayer(Vector2 movementVector)
+
+    internal void Strafe(Vector2 movementVector2)
+    {
+        //Essentially, this is the groundmovement method that doesnt move in the forward direction
+        float fowardMovement = movementSpeed * movementVector2.magnitude * Time.fixedDeltaTime;
+
+        //make it relative to camera
+        Transform camTransform = playerScript.GetCurrentCamera().transform;
+        Vector3 camF = camTransform.forward;
+        Vector3 camR = camTransform.right;
+        camF.y = 0;
+        camR.y = 0;
+        camF = camF.normalized;
+        camR = camR.normalized;
+        Vector3 directionVector = (camF * movementVector2.y + camR * movementVector2.x);
+        playerRB.MovePosition(transform.position + (directionVector * fowardMovement));
+    }
+
+    internal void InstantPlayerRotation(Vector2 movementVector)
     {
         //We need to rotate the movement vector to ensure that it's pointing in the direction of the camera
         //use y axis
@@ -98,6 +114,20 @@ public class PlayerMovementScript : MonoBehaviour
         //Debug.Log("debug transform forward"+playerTransform.forward);
     }
 
+
+    internal void SmoothPlayerRotation(Vector2 movementVector)
+    {
+        //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
+        if (movementVector.x != 0f || movementVector.y != 0f)
+        {
+            Quaternion calculatedRotation = new Quaternion();
+            calculatedRotation.eulerAngles = new Vector3(0, movementVector.x*15 + playerRB.rotation.eulerAngles.y, 0);
+            Quaternion newRotation = Quaternion.Lerp(playerRB.rotation, calculatedRotation, Time.fixedDeltaTime * rotationSpeed);
+            playerRB.MoveRotation(newRotation);
+        }
+    }
+
+
     internal float Jump(Vector3 startPosition, float startTime, Vector2 movementInput)
     {
         float distCovered = (Time.time - startTime) * jumpSpeed;
@@ -109,7 +139,7 @@ public class PlayerMovementScript : MonoBehaviour
         transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
        // playerRB.MovePosition(endPosition);
         //Allow the player to move in the air because it's fun
-        RotatePlayer(movementInput);
+        InstantPlayerRotation(movementInput);
 
         //move player
         CalculateForward();
@@ -144,8 +174,7 @@ public class PlayerMovementScript : MonoBehaviour
         return fractionOfJourney;
     }
 
-    
-   internal void CalculateForward()
+    internal void CalculateForward()
     {
         if (Physics.Raycast(new Vector3(playerRB.transform.position.x, playerRB.transform.position.y - height / 1.5f, playerRB.transform.position.z), -playerRB.transform.up, out hitInfo, 1f, groundLayer))
         {

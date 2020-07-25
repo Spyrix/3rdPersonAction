@@ -8,6 +8,7 @@ public class PlayerInputScript : MonoBehaviour
 {
 
     Vector2 movementInput;
+    Vector2 rightStickInput;
     Vector2 runInput;
     float jumpInput;
     float cancelClimbInput;
@@ -80,6 +81,11 @@ public class PlayerInputScript : MonoBehaviour
         inputAction.PlayerControls.Aim.performed += ctx => aimInput = ctx.ReadValue<float>();
         //Setup input for jump value release
         inputAction.PlayerControls.Aim.canceled += ctx => aimInput = ctx.ReadValue<float>();
+
+        //Setup input for jump values press
+        inputAction.PlayerControls.MoveCamera.performed += ctx => rightStickInput = ctx.ReadValue<Vector2>();
+        //Setup input for jump value release
+        inputAction.PlayerControls.MoveCamera.canceled += ctx => rightStickInput = ctx.ReadValue<Vector2>();
     }
 
     void Start()
@@ -202,6 +208,11 @@ public class PlayerInputScript : MonoBehaviour
     public float GetCancelClimbInput()
     {
         return cancelClimbInput;
+    }
+
+    public Vector2 GetRightStickInput()
+    {
+        return rightStickInput;
     }
 
     public Rigidbody GetRigidbody()

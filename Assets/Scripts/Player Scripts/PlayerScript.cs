@@ -65,10 +65,19 @@ public class PlayerScript : MonoBehaviour
 
     internal void GroundMovement(Vector2 movementVector)
     {
-        movementScript.RotatePlayer(movementVector);
+        movementScript.InstantPlayerRotation(movementVector);
         movementScript.GroundMovement(movementVector);
         //Debug.Log("movementinput float:"+ movementInput);
        //animationScript.EnterWalkingState(movementInput);
+    }
+
+
+    internal void Strafe(Vector2 movementVector, Vector2 rotationVector)
+    {
+        movementScript.Strafe(movementVector);
+        movementScript.SmoothPlayerRotation(rotationVector);
+        //Debug.Log("movementinput float:"+ movementInput);
+        //animationScript.EnterWalkingState(movementInput);
     }
 
     internal void Idle()
@@ -76,14 +85,6 @@ public class PlayerScript : MonoBehaviour
         /*animationScript.LeaveJumpState();
         animationScript.LeaveWalkingState();
         animationScript.LeaveSpellAimingState();*/
-    }
-
-    internal void SpellAim(Vector2 playerLookVector)
-    {
-        //Playerlook variables tell us what direction to aim in
-        /*.LeaveWalkingState();
-        animationScript.EnterSpellAimingState();*/
-        movementScript.RotatePlayer(playerLookVector);
     }
 
     internal float Jump(Vector3 startPosition, float startTime, Vector2 movementInput)
