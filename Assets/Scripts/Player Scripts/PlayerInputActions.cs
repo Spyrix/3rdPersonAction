@@ -616,6 +616,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""c4475d6a-de01-478e-b015-c9720ba7d223"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -803,6 +811,17 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""RotateCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4b66944-4991-4d0e-ae91-3fc617678e4f"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1118,6 +1137,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_MoveCamera = m_PlayerControls.FindAction("MoveCamera", throwIfNotFound: true);
         m_PlayerControls_Aim = m_PlayerControls.FindAction("Aim", throwIfNotFound: true);
         m_PlayerControls_RotateCamera = m_PlayerControls.FindAction("RotateCamera", throwIfNotFound: true);
+        m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
         // MenuControls
         m_MenuControls = asset.FindActionMap("MenuControls", throwIfNotFound: true);
         m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -1297,6 +1317,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_MoveCamera;
     private readonly InputAction m_PlayerControls_Aim;
     private readonly InputAction m_PlayerControls_RotateCamera;
+    private readonly InputAction m_PlayerControls_Fire;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1313,6 +1334,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @MoveCamera => m_Wrapper.m_PlayerControls_MoveCamera;
         public InputAction @Aim => m_Wrapper.m_PlayerControls_Aim;
         public InputAction @RotateCamera => m_Wrapper.m_PlayerControls_RotateCamera;
+        public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1358,6 +1380,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @RotateCamera.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRotateCamera;
                 @RotateCamera.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnRotateCamera;
+                @Fire.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1398,6 +1423,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @RotateCamera.started += instance.OnRotateCamera;
                 @RotateCamera.performed += instance.OnRotateCamera;
                 @RotateCamera.canceled += instance.OnRotateCamera;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
@@ -1524,6 +1552,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnMoveCamera(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {

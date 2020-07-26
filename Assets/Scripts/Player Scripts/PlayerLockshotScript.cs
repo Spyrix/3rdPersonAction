@@ -18,6 +18,10 @@ public class PlayerLockshotScript : MonoBehaviour
     internal float maxTargets;
     [SerializeField]
     internal float maxDistance;
+    [SerializeField]
+    internal float cooldownTimer = 0f;
+    [SerializeField]
+    internal float cooldownTimeLimit;
 
     RaycastHit hit;
     /*
@@ -26,28 +30,29 @@ public class PlayerLockshotScript : MonoBehaviour
     [SerializeField]
     internal GameObject targetReticle;
 
+    [SerializeField]
+    internal List<GameObject> rayOrigins;
 
+    internal PlayerInputActions inputAction;
+    internal float triggerPullInput;
     void Awake()
     {
         targets = new List<GameObject>();
         maxTargets = 8;
         maxDistance = 40f;
+        cooldownTimeLimit = 5f;
+
+        inputAction = new PlayerInputActions();
+        //Setup input for jump values press
+        inputAction.PlayerControls.Aim.performed += ctx => triggerPullInput = ctx.ReadValue<float>();
+        //Setup input for jump value release
+        inputAction.PlayerControls.Aim.canceled += ctx => triggerPullInput = ctx.ReadValue<float>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    void ClearTargets()
-    {
-        targets = new List<GameObject>();
-    }
-
-    void AddNewTarget(GameObject t)
-    {
-        targets.Add(t);
+        LookForTargets();
     }
 
     void LookForTargets()
@@ -56,19 +61,45 @@ public class PlayerLockshotScript : MonoBehaviour
          * This function shoots out raycasts from the targetting reticle to 
          * 
          */
-        for (int i = 0; i < 3; i++) {
-            Physics.Raycast(targetReticle.transform.position, targetReticle.transform.forward, out hit, maxDistance);
-
-        }
-        for (int i = 0; i < 2; i++)
+        Vector3[] origins = new Vector3[]
         {
-            Physics.Raycast(targetReticle.transform.position, targetReticle.transform.forward, out hit, maxDistance);
-
+            targetReticle.transform.position
+        };
+        Vector3 rayDirection = Vector3.Cross(targetReticle.transform.forward, targetReticle.transform.right);
+        for (int i = 0; i < origins.Length; i++) {
+            //If there is a hit
+            if (Physics.Raycast(origins[i], rayDirection, out hit, maxDistance))
+            {
+                Debug.DrawRay(origins[i], rayDirection, Color.green);
+                //If the gameobject hit is not already a target
+                AddNewTarget(hit.collider.gameObject);
+            }
         }
     }
 
-    internal void CreateAimingCylinder()
+    void ClearTargets()
     {
-        
+        targets.Clear();
     }
+
+    void AddNewTarget(GameObject t)
+    {
+        if (!targets.Exists(x => x == hit.collider.gameObject)&&targets.Count < maxTargets)
+        {
+            targets.Add(t);
+        }
+    }
+
+    /*private void OnDrawGizmos()
+    {
+        Vector3[] origins = new Vector3[]
+        {
+            targetReticle.transform.position,
+        };
+        for (int i = 0; i < origins.Length; i++)
+        {
+            Gizmos.color = new Color(1, 0, 0, 1f);
+            Gizmos.DrawCube(origins[i], new Vector3(.05f, .05f, .05f));
+        }
+    }*/
 }

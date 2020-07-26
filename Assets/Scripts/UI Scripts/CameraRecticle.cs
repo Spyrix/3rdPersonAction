@@ -8,23 +8,23 @@ public class CameraRecticle : MonoBehaviour
 {
     Mesh mesh;
     Vector3[] vertices;
-    [SerializeField]
-    internal PlayerInputScript inputScript;
     int[] triangles;
-    float maxDistanceFromPlayer = 15f;
-
-    Vector2 movementInput = new Vector2();
+    [SerializeField]
+    internal Camera c;
     void Awake()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         CreateShape();
         UpdateMesh();
+        //ensure that the reticle is centered
+        transform.position = c.transform.position + new Vector3(0,0,2);
     }
 
     // Update is called once per frame
     void Update()
     {
+
     }
 
     //This method is used to create the custom reticle shaped mesh.
@@ -61,7 +61,6 @@ public class CameraRecticle : MonoBehaviour
     void UpdateMesh()
     {
         mesh.Clear();
-
         mesh.vertices = vertices;
         mesh.triangles = triangles;
     }

@@ -82,13 +82,7 @@ public class PlayerMovementScript : MonoBehaviour
 
         //make it relative to camera
         Transform camTransform = playerScript.GetCurrentCamera().transform;
-        Vector3 camF = camTransform.forward;
-        Vector3 camR = camTransform.right;
-        camF.y = 0;
-        camR.y = 0;
-        camF = camF.normalized;
-        camR = camR.normalized;
-        Vector3 directionVector = (camF * movementVector2.y + camR * movementVector2.x);
+        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector2, camTransform);
         playerRB.MovePosition(transform.position + (directionVector * fowardMovement));
     }
 
@@ -98,17 +92,12 @@ public class PlayerMovementScript : MonoBehaviour
         //use y axis
 
         Transform camTransform = playerScript.GetCurrentCamera().transform;
-        Vector3 camF = camTransform.forward;
-        Vector3 camR = camTransform.right;
-        camF.y = 0;
-        camR.y = 0;
-        camF = camF.normalized;
-        camR = camR.normalized;
+        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, camTransform);
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
         {
             //playerRB.MoveRotation(Quaternion.LookRotation(new Vector3(movementVector.x, 0f, movementVector.y)));
-            playerRB.MoveRotation(Quaternion.LookRotation(camF * movementVector.y + camR * movementVector.x));
+            playerRB.MoveRotation(Quaternion.LookRotation(directionVector));
         }
             
         //Debug.Log("debug transform forward"+playerTransform.forward);
