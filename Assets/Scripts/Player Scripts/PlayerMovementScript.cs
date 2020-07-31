@@ -81,8 +81,7 @@ public class PlayerMovementScript : MonoBehaviour
         float fowardMovement = movementSpeed * movementVector2.magnitude * Time.fixedDeltaTime;
 
         //make it relative to camera
-        Transform camTransform = playerScript.GetCurrentCamera().transform;
-        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector2, camTransform);
+        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector2, playerScript.GetCurrentCamera().transform);
         playerRB.MovePosition(transform.position + (directionVector * fowardMovement));
     }
 
@@ -91,8 +90,7 @@ public class PlayerMovementScript : MonoBehaviour
         //We need to rotate the movement vector to ensure that it's pointing in the direction of the camera
         //use y axis
 
-        Transform camTransform = playerScript.GetCurrentCamera().transform;
-        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, camTransform);
+        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, playerScript.GetCurrentCamera().transform);
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
         {

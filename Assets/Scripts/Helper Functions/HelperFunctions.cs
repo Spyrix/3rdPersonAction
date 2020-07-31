@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class HelperFunctions
 {
-    public static Vector2 ConvertMoveInputToCam(Vector2 movementVector2, Transform camTransform)
+    public static Vector3 ConvertMoveInputToCam(Vector2 movementVector2, Transform camTransform)
     {
         /*
          * This function takes the transform of a camera and the input used to control a player's movement
@@ -16,6 +16,7 @@ public static class HelperFunctions
         camR.y = 0;
         camF = camF.normalized;
         camR = camR.normalized;
+        Debug.Log("got here");
         return (camF * movementVector2.y + camR * movementVector2.x);
     }
 }

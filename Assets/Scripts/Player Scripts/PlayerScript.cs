@@ -14,6 +14,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovementScript))]
 [RequireComponent(typeof(PlayerCollisionScript))]
 [RequireComponent(typeof(PlayerClimbingScript))]
+[RequireComponent(typeof(PlayerWeaponController))]
 //[RequireComponent(typeof(PlayerAnimation))]
 //[RequireComponent(typeof(PlayerHealthController))]
 [RequireComponent(typeof(MeshCollider))]
@@ -21,6 +22,8 @@ public class PlayerScript : MonoBehaviour
 {
     [SerializeField]
     internal GameObject currentCamera;
+    [SerializeField]
+    internal PlayerWeaponController weaponScript;
     [SerializeField]
     internal PlayerInputScript inputScript;
     [SerializeField]
@@ -108,6 +111,16 @@ public class PlayerScript : MonoBehaviour
         {
             return null;
         }
+    }
+
+    internal void FireCurrentWeapon()
+    {
+        weaponScript.FireWeapon();
+    }
+
+    internal void SwapFromWeapon()
+    {
+        weaponScript.SwapFromWeapon();
     }
 
     internal float ClimbAlongLedge(Vector3 startPosition, float startTime, Vector3 endPosition)

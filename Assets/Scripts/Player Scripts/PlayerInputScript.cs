@@ -14,6 +14,7 @@ public class PlayerInputScript : MonoBehaviour
     float cancelClimbInput;
     float dashInput;
     float aimInput;
+    float fireWeaponInput;
     [SerializeField]
     int jumpCountMax;
     int jumpsLeft;
@@ -67,25 +68,27 @@ public class PlayerInputScript : MonoBehaviour
         inputAction.PlayerControls.Jump.canceled += ctx => jumpInput = ctx.ReadValue<float>();
 
 
-        //Setup input for jump values press
+        //Setup input for cancel climb values press
         inputAction.PlayerControls.CancelClimb.performed += ctx => cancelClimbInput = ctx.ReadValue<float>();
-        //Setup input for jump value release
+        //Setup input for cancel climb value release
         inputAction.PlayerControls.CancelClimb.canceled += ctx => cancelClimbInput = ctx.ReadValue<float>();
 
-        //Setup input for jump values press
+        //Setup input for dash values press
         inputAction.PlayerControls.Dash.performed += ctx => dashInput = ctx.ReadValue<float>();
-        //Setup input for jump value release
+        //Setup input for dash value release
         inputAction.PlayerControls.Dash.canceled += ctx => dashInput = ctx.ReadValue<float>();
 
-        //Setup input for jump values press
+        //Setup input for aim values press
         inputAction.PlayerControls.Aim.performed += ctx => aimInput = ctx.ReadValue<float>();
-        //Setup input for jump value release
+        //Setup input for aim value release
         inputAction.PlayerControls.Aim.canceled += ctx => aimInput = ctx.ReadValue<float>();
 
-        //Setup input for jump values press
-        inputAction.PlayerControls.MoveCamera.performed += ctx => rightStickInput = ctx.ReadValue<Vector2>();
-        //Setup input for jump value release
-        inputAction.PlayerControls.MoveCamera.canceled += ctx => rightStickInput = ctx.ReadValue<Vector2>();
+        //Setup input for fire weapon values press
+        inputAction.PlayerControls.Fire.performed += ctx => fireWeaponInput = ctx.ReadValue<float>();
+        //Setup input for fire weapon value release
+        inputAction.PlayerControls.Fire.canceled += ctx => fireWeaponInput = ctx.ReadValue<float>();
+
+
     }
 
     void Start()
@@ -208,6 +211,11 @@ public class PlayerInputScript : MonoBehaviour
     public float GetCancelClimbInput()
     {
         return cancelClimbInput;
+    }
+
+    public float GetFireWeaponInput()
+    {
+        return fireWeaponInput;
     }
 
     public Vector2 GetRightStickInput()

@@ -10,7 +10,7 @@ using UnityEngine;
 * If a target is maxDistance away from the player, it drops from the total targets.
 * Once the right trigger is released, it fires projectiles that home in on all the targets.
 */
-public class PlayerLockshotScript : MonoBehaviour
+public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
 {
     [SerializeField]
     internal List<GameObject> targets;
@@ -77,9 +77,14 @@ public class PlayerLockshotScript : MonoBehaviour
         }
     }
 
-    void ClearTargets()
+    public void SwapFromWeapon()
     {
         targets.Clear();
+    }
+
+    public void SwapToWeapon()
+    {
+
     }
 
     void AddNewTarget(GameObject t)
@@ -88,6 +93,20 @@ public class PlayerLockshotScript : MonoBehaviour
         {
             targets.Add(t);
         }
+        //play a sound, pitch that sound up based on how full the targets list is
+        //add some sort of marker above the target to 
+    }
+
+    public void Fire()
+    {
+        /*
+         * For each target, spawn a lockshot projectile homing prefab. Then, wait a small amount of time before firing the next one.
+         */
+        foreach (GameObject target in targets)
+        {
+
+        }
+        targets.Clear();
     }
 
     /*private void OnDrawGizmos()

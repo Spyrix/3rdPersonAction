@@ -8,6 +8,7 @@ public class PlayerStateAim : IPlayerState
     Vector2 mi;
     Vector2 rsi;
     float ji;
+    float fi;
     float ai;
     public PlayerStateAim(PlayerInputScript player)
     {
@@ -19,10 +20,17 @@ public class PlayerStateAim : IPlayerState
     }
     public void StateUpdate()
     {
+        fi = pi.GetFireWeaponInput();
         mi = pi.GetMovementInput();
         rsi = pi.GetRightStickInput();
         ji = pi.GetJumpInput();
         ai = pi.GetAimInput();
+
+        if (fi > 0f)
+        {
+            pi.playerScript.FireCurrentWeapon();
+        }
+
         pi.playerScript.Strafe(mi,rsi);
     }
     public void HandleInput()
@@ -32,6 +40,7 @@ public class PlayerStateAim : IPlayerState
             pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().FreeCamera();
             pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().enabled = false;
             pi.playerScript.GetCurrentCamera().GetComponent<ThirdPersonCameraController>().enabled = true;
+            pi.playerScript.SwapFromWeapon();
             pi.currentState = new PlayerStateIdle(pi);
         }
     }
