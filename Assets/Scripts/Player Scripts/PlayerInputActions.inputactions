@@ -611,6 +611,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "PrevWeapon",
+                    "type": "Button",
+                    "id": "9b719603-7000-4a65-8574-cfe5c378b54e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "NextWeapon",
+                    "type": "Button",
+                    "id": "7724d241-9fe1-4697-a694-f180f21cfcd8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -809,6 +825,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "39575af9-d472-4c2c-9e17-aaa3fe1c7c20",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "PrevWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d3fbdaf-5b24-4f4b-9e8a-8d393664fefb",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "NextWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

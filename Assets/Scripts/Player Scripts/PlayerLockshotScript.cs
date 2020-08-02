@@ -10,7 +10,7 @@ using UnityEngine;
 * If a target is maxDistance away from the player, it drops from the total targets.
 * Once the right trigger is released, it fires projectiles that home in on all the targets.
 */
-public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
+public class PlayerLockshotScript : PlayerWeapon
 {
     [SerializeField]
     internal List<GameObject> targets;
@@ -22,6 +22,10 @@ public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
     internal float cooldownTimer = 0f;
     [SerializeField]
     internal float cooldownTimeLimit;
+    [SerializeField]
+    internal GameObject projectile;
+    [SerializeField]
+    internal bool canFire;
 
     RaycastHit hit;
     /*
@@ -33,7 +37,6 @@ public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
     [SerializeField]
     internal List<GameObject> rayOrigins;
 
-    internal PlayerInputActions inputAction;
     internal float triggerPullInput;
     void Awake()
     {
@@ -41,17 +44,13 @@ public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
         maxTargets = 8;
         maxDistance = 40f;
         cooldownTimeLimit = 5f;
-
-        inputAction = new PlayerInputActions();
-        //Setup input for jump values press
-        inputAction.PlayerControls.Aim.performed += ctx => triggerPullInput = ctx.ReadValue<float>();
-        //Setup input for jump value release
-        inputAction.PlayerControls.Aim.canceled += ctx => triggerPullInput = ctx.ReadValue<float>();
+        canFire = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        HandleCooldown();
         LookForTargets();
     }
 
@@ -61,28 +60,30 @@ public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
          * This function shoots out raycasts from the targetting reticle to 
          * 
          */
-        Vector3[] origins = new Vector3[]
-        {
-            targetReticle.transform.position
-        };
-        Vector3 rayDirection = Vector3.Cross(targetReticle.transform.forward, targetReticle.transform.right);
-        for (int i = 0; i < origins.Length; i++) {
-            //If there is a hit
-            if (Physics.Raycast(origins[i], rayDirection, out hit, maxDistance))
+        if (cooldownTimer == 0f) {
+            Vector3[] origins = new Vector3[]
             {
-                Debug.DrawRay(origins[i], rayDirection, Color.green);
-                //If the gameobject hit is not already a target
-                AddNewTarget(hit.collider.gameObject);
+            targetReticle.transform.position
+            };
+            Vector3 rayDirection = Vector3.Cross(targetReticle.transform.forward, targetReticle.transform.right);
+            for (int i = 0; i < origins.Length; i++) {
+                //If there is a hit
+                if (Physics.Raycast(origins[i], rayDirection, out hit, maxDistance))
+                {
+                    Debug.DrawRay(origins[i], rayDirection, Color.green);
+                    //If the gameobject hit is not already a target
+                    AddNewTarget(hit.collider.gameObject);
+                }
             }
         }
     }
 
-    public void SwapFromWeapon()
+    public override void SwapFromWeapon()
     {
         targets.Clear();
     }
 
-    public void SwapToWeapon()
+    public override void SwapToWeapon()
     {
 
     }
@@ -97,16 +98,55 @@ public class PlayerLockshotScript : MonoBehaviour, IPlayerWeapon
         //add some sort of marker above the target to 
     }
 
-    public void Fire()
+    public override void Fire()
     {
         /*
          * For each target, spawn a lockshot projectile homing prefab. Then, wait a small amount of time before firing the next one.
+         * Currently, works more like a shotgun. Also the projectile goes through stuff because pathfinding is hard
          */
-        foreach (GameObject target in targets)
+        /* if (cooldownTimer == 0f) {
+             for(int i = 0; i < targets.Count; i++)
+             {
+                 GameObject go = Instantiate(projectile, transform.position + transform.forward, Quaternion.identity);
+                 go.GetComponent<LockshotProjectile>().SetTarget(targets[i]);
+             }
+         }
+         cooldownTimer = 0.1f;*/
+        if (canFire)
         {
-
+            StartCoroutine(WaitForNextProjectile(0));
+            canFire = false;
         }
-        targets.Clear();
+    }
+
+    private void HandleCooldown()
+    {
+        if (cooldownTimer > 0f)
+        {
+            cooldownTimer += Time.deltaTime;
+            if (cooldownTimer >= cooldownTimeLimit)
+            {
+                cooldownTimer = 0f;
+                canFire = true;
+            }
+        }
+    }
+
+    IEnumerator WaitForNextProjectile(int i)
+    {
+        if (i < targets.Count)
+        {
+            Debug.Log("Firing projectile #:" + i);
+            GameObject go = Instantiate(projectile, transform.position + transform.forward, Quaternion.identity);
+            go.GetComponent<LockshotProjectile>().SetTarget(targets[i]);
+            yield return new WaitForSeconds(0.2f);
+            StartCoroutine(WaitForNextProjectile(i + 1));
+        }
+        else
+        {
+            cooldownTimer = 0.1f;
+            targets.Clear();
+        }
     }
 
     /*private void OnDrawGizmos()

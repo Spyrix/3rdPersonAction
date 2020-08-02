@@ -68,6 +68,7 @@ public class PlayerScript : MonoBehaviour
 
     internal void GroundMovement(Vector2 movementVector)
     {
+       // movementScript.InstantPlayerRotation(movementVector);
         movementScript.InstantPlayerRotation(movementVector);
         movementScript.GroundMovement(movementVector);
         //Debug.Log("movementinput float:"+ movementInput);
@@ -170,6 +171,11 @@ public class PlayerScript : MonoBehaviour
         return playerTransform;
     }
 
+    public Rigidbody GetPlayerRigidbody()
+    {
+        return GetComponent<Rigidbody>();
+    }
+
     public bool GetCollisionActive()
     {
         return collisionScript.GetCollisionActive();
@@ -185,5 +191,6 @@ public class PlayerScript : MonoBehaviour
     {
         return currentCamera;
     }
+
 }
 

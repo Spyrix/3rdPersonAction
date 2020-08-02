@@ -12,7 +12,7 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField]
     float movementSpeed = 1f;
     [SerializeField]
-    float rotationSpeed;
+    float smoothRotationSpeed;
     //[SerializeField]
     //float turnSpeed = 100f;
     [SerializeField]
@@ -53,7 +53,7 @@ public class PlayerMovementScript : MonoBehaviour
         //init constants
         dashTimerMax = .25f;
         dashSpeed = 15f;
-        rotationSpeed = 10f;
+        smoothRotationSpeed = 25f;
     }
 
     // Update is called once per frame
@@ -89,7 +89,6 @@ public class PlayerMovementScript : MonoBehaviour
     {
         //We need to rotate the movement vector to ensure that it's pointing in the direction of the camera
         //use y axis
-
         Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, playerScript.GetCurrentCamera().transform);
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
@@ -101,19 +100,17 @@ public class PlayerMovementScript : MonoBehaviour
         //Debug.Log("debug transform forward"+playerTransform.forward);
     }
 
-
     internal void SmoothPlayerRotation(Vector2 movementVector)
     {
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
         {
             Quaternion calculatedRotation = new Quaternion();
-            calculatedRotation.eulerAngles = new Vector3(0, movementVector.x*15 + playerRB.rotation.eulerAngles.y, 0);
-            Quaternion newRotation = Quaternion.Lerp(playerRB.rotation, calculatedRotation, Time.fixedDeltaTime * rotationSpeed);
+            calculatedRotation.eulerAngles = new Vector3(0, movementVector.x * 15 + playerRB.rotation.eulerAngles.y, 0);
+            Quaternion newRotation = Quaternion.Lerp(playerRB.rotation, calculatedRotation, Time.fixedDeltaTime * smoothRotationSpeed);
             playerRB.MoveRotation(newRotation);
         }
     }
-
 
     internal float Jump(Vector3 startPosition, float startTime, Vector2 movementInput)
     {

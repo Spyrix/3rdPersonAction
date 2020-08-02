@@ -15,6 +15,8 @@ public class PlayerInputScript : MonoBehaviour
     float dashInput;
     float aimInput;
     float fireWeaponInput;
+    float prevWeaponInput;
+    float nextWeaponInput;
     [SerializeField]
     int jumpCountMax;
     int jumpsLeft;
@@ -88,7 +90,20 @@ public class PlayerInputScript : MonoBehaviour
         //Setup input for fire weapon value release
         inputAction.PlayerControls.Fire.canceled += ctx => fireWeaponInput = ctx.ReadValue<float>();
 
+        //Setup input for right stick values press
+        inputAction.PlayerControls.MoveCamera.performed += ctx => rightStickInput = ctx.ReadValue<Vector2>();
+        //Setup input for right stick value release
+        inputAction.PlayerControls.MoveCamera.canceled += ctx => rightStickInput = ctx.ReadValue<Vector2>();
+        
+        //Setup input for next weapon values press
+        inputAction.PlayerControls.NextWeapon.performed += ctx => nextWeaponInput = ctx.ReadValue<float>();
+        //Setup input for next weapon value release
+        inputAction.PlayerControls.NextWeapon.canceled += ctx => nextWeaponInput = ctx.ReadValue<float>();
 
+        //Setup input for prev weapon values press
+        inputAction.PlayerControls.PrevWeapon.performed += ctx => prevWeaponInput = ctx.ReadValue<float>();
+        //Setup input for prev weapon value release
+        inputAction.PlayerControls.PrevWeapon.canceled += ctx => prevWeaponInput = ctx.ReadValue<float>();
     }
 
     void Start()
@@ -216,6 +231,16 @@ public class PlayerInputScript : MonoBehaviour
     public float GetFireWeaponInput()
     {
         return fireWeaponInput;
+    }
+
+    public float GetNextWeaponInput()
+    {
+        return nextWeaponInput;
+    }
+
+    public float GetPrevWeaponInput()
+    {
+        return prevWeaponInput;
     }
 
     public Vector2 GetRightStickInput()

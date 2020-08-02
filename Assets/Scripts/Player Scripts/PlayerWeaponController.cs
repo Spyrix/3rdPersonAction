@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerWeaponController : MonoBehaviour
 {
-    IPlayerWeapon currentWeapon;
+    [SerializeField]
+    internal PlayerWeapon currentWeapon;
+
     //This class is responsible
     void Awake()
     {
-        currentWeapon = null;
     }
 
     public void FireWeapon()

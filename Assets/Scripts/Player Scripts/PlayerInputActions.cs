@@ -624,6 +624,22 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""PrevWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b719603-7000-4a65-8574-cfe5c378b54e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""NextWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""7724d241-9fe1-4697-a694-f180f21cfcd8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -822,6 +838,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39575af9-d472-4c2c-9e17-aaa3fe1c7c20"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""PrevWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d3fbdaf-5b24-4f4b-9e8a-8d393664fefb"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""NextWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1138,6 +1176,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_Aim = m_PlayerControls.FindAction("Aim", throwIfNotFound: true);
         m_PlayerControls_RotateCamera = m_PlayerControls.FindAction("RotateCamera", throwIfNotFound: true);
         m_PlayerControls_Fire = m_PlayerControls.FindAction("Fire", throwIfNotFound: true);
+        m_PlayerControls_PrevWeapon = m_PlayerControls.FindAction("PrevWeapon", throwIfNotFound: true);
+        m_PlayerControls_NextWeapon = m_PlayerControls.FindAction("NextWeapon", throwIfNotFound: true);
         // MenuControls
         m_MenuControls = asset.FindActionMap("MenuControls", throwIfNotFound: true);
         m_MenuControls_Navigate = m_MenuControls.FindAction("Navigate", throwIfNotFound: true);
@@ -1318,6 +1358,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_Aim;
     private readonly InputAction m_PlayerControls_RotateCamera;
     private readonly InputAction m_PlayerControls_Fire;
+    private readonly InputAction m_PlayerControls_PrevWeapon;
+    private readonly InputAction m_PlayerControls_NextWeapon;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1335,6 +1377,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @Aim => m_Wrapper.m_PlayerControls_Aim;
         public InputAction @RotateCamera => m_Wrapper.m_PlayerControls_RotateCamera;
         public InputAction @Fire => m_Wrapper.m_PlayerControls_Fire;
+        public InputAction @PrevWeapon => m_Wrapper.m_PlayerControls_PrevWeapon;
+        public InputAction @NextWeapon => m_Wrapper.m_PlayerControls_NextWeapon;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1383,6 +1427,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Fire.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnFire;
+                @PrevWeapon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnPrevWeapon;
+                @PrevWeapon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnPrevWeapon;
+                @PrevWeapon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnPrevWeapon;
+                @NextWeapon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnNextWeapon;
+                @NextWeapon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnNextWeapon;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -1426,6 +1476,12 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @PrevWeapon.started += instance.OnPrevWeapon;
+                @PrevWeapon.performed += instance.OnPrevWeapon;
+                @PrevWeapon.canceled += instance.OnPrevWeapon;
+                @NextWeapon.started += instance.OnNextWeapon;
+                @NextWeapon.performed += instance.OnNextWeapon;
+                @NextWeapon.canceled += instance.OnNextWeapon;
             }
         }
     }
@@ -1553,6 +1609,8 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnAim(InputAction.CallbackContext context);
         void OnRotateCamera(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnPrevWeapon(InputAction.CallbackContext context);
+        void OnNextWeapon(InputAction.CallbackContext context);
     }
     public interface IMenuControlsActions
     {

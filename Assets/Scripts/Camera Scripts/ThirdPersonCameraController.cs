@@ -40,14 +40,14 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Awake()
     {
-        smoothTime = .10f;
-        cameraSpeedY = 1f;
+        smoothTime = .15f;
+        cameraSpeedY = .2f;
         cameraPercentVertical = 0f;
         minCameraAngleX = 0;
         maxCameraAngleX = 45;
-        cameraSpeedX = 15f;
+        cameraSpeedX = 1.5f;
         maxDistanceFromPlayer = 10f;
-        minDistanceFromPlayer = 5f;
+        minDistanceFromPlayer = 9f;
         inputAction = new PlayerInputActions();
         //Setup input for horizontal movement value press
         inputAction.PlayerControls.MoveCamera.performed += ctx => cameraMoveInput = ctx.ReadValue<Vector2>();
@@ -69,28 +69,29 @@ public class ThirdPersonCameraController : MonoBehaviour
     private void Update()
     {
         //Look at Player
-        transform.LookAt(player.transform);
+
+
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void LateUpdate()
     {
-
+        transform.LookAt(player.transform.position);
         HorizontalCameraInput();
         HorizontalCameraFollow();
         VerticalCameraInput();
         VerticalCameraFollow();
     }
 
+
     internal void HorizontalCameraInput()
     {
         if (cameraMoveInput.x > 0.2f)
         {
-            transform.RotateAround(player.transform.position, Vector3.up, 5 * cameraSpeedX * Time.fixedDeltaTime);
+            transform.RotateAround(player.transform.position, Vector3.up, 5 * cameraSpeedX * Time.fixedDeltaTime * cameraMoveInput.x);
         }
         if (cameraMoveInput.x < -0.2f)
         {
-            transform.RotateAround(player.transform.position, Vector3.up, -5 * cameraSpeedX * Time.fixedDeltaTime);
+            transform.RotateAround(player.transform.position, Vector3.up, -5 * cameraSpeedX * Time.fixedDeltaTime * -cameraMoveInput.x);
         }
     }
 
@@ -98,7 +99,8 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         Vector2 cameraPosition2D = new Vector2(transform.position.x, transform.position.z);
         Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.z);
-        //The purpose of this function is to move the camera so that it's always 
+        //The purpose of this function is to move the camera so that it's always with a certain distance of a player
+        //This is 
         if (Mathf.Abs(Vector3.Distance(player.transform.position, transform.position)) > maxDistanceFromPlayer)
         {
             //transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
@@ -117,11 +119,11 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         if (cameraMoveInput.y > 0.2f && cameraPercentVertical < 1f)
         {
-            cameraPercentVertical += cameraSpeedY * Time.fixedDeltaTime;
+            cameraPercentVertical += cameraSpeedY * Time.fixedDeltaTime * cameraMoveInput.y;
         }
         if (cameraMoveInput.y < -0.2f && cameraPercentVertical > 0f)
         {
-            cameraPercentVertical -= cameraSpeedY * Time.fixedDeltaTime;
+            cameraPercentVertical -= cameraSpeedY * Time.fixedDeltaTime * -cameraMoveInput.y;
         }
 
     }

@@ -16,7 +16,6 @@ public static class HelperFunctions
         camR.y = 0;
         camF = camF.normalized;
         camR = camR.normalized;
-        Debug.Log("got here");
         return (camF * movementVector2.y + camR * movementVector2.x);
     }
 }

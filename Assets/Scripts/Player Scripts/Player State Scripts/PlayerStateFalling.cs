@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerStateFalling : IPlayerState
@@ -6,18 +8,27 @@ public class PlayerStateFalling : IPlayerState
     Vector2 mi;
     float jumpInput;
     bool superJumpReady;
+    float fallingVelocity;
     PlayerInputScript pi;
     public PlayerStateFalling(PlayerInputScript player)
     {
+        fallingVelocity = -2f;
         pi = player;
         superJumpReady = false;
         Debug.Log("entering falling state");
+        Thread thread = new Thread(() => {
+            Thread.Sleep(150);
+            fallingVelocity = -8f;
+        });
+        thread.Start();
     }
+
     public void StateUpdate()
     {
         mi = pi.GetMovementInput();
         jumpInput = pi.GetJumpInput();
         pi.playerScript.GroundMovement(mi);
+        pi.playerScript.GetPlayerRigidbody().velocity = new Vector3(0, fallingVelocity, 0);
         if (jumpInput == 0f)
         {
             superJumpReady = true;
@@ -48,5 +59,11 @@ public class PlayerStateFalling : IPlayerState
     public Color GetColor()
     {
         return Color.black;
+    }
+
+    private IEnumerator WaitToIncreaseVelocity()
+    {
+        yield return new WaitForSeconds(.5f);
+        fallingVelocity = -8f;
     }
 }
