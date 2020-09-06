@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateClimbing : IPlayerState
+public class PlayerStateClimbing : PlayerState
 {
     //This state occurs after the player has input a direction to climb in.
     //The player will linerally interpolate from one ledge to the next in the network
@@ -37,12 +37,14 @@ public class PlayerStateClimbing : IPlayerState
         Debug.Log("entering climbing");
 
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         mi = pi.GetMovementInput();
         climbProgress = pi.playerScript.ClimbAlongLedge(startPosition, startTime, endPosition);
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         //If there is no more ledge left to climb, or if the player has stopped pressing the controller stick, go into ledge hanging state
         if (climbProgress > 1f || mi.magnitude == 0f)

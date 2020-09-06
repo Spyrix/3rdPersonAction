@@ -5,6 +5,9 @@ using UnityEngine;
 public class ThirdPersonCameraController : MonoBehaviour
 {
     [SerializeField]
+    internal GameObject reticle;
+
+    [SerializeField]
     internal GameObject player;
     [SerializeField]
     internal PlayerInputActions inputAction;
@@ -18,6 +21,8 @@ public class ThirdPersonCameraController : MonoBehaviour
     internal float minDistanceFromPlayer;
     [SerializeField]
     internal float smoothTime;
+
+    internal float maxDistanceOffset;//used to give some distance leeway for the camera so it's not just thumping
 
     private Vector3 velocity = Vector3.zero;
 
@@ -40,6 +45,7 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     void Awake()
     {
+        maxDistanceOffset = .5f;
         smoothTime = .15f;
         cameraSpeedY = .2f;
         cameraPercentVertical = 0f;
@@ -53,6 +59,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         inputAction.PlayerControls.MoveCamera.performed += ctx => cameraMoveInput = ctx.ReadValue<Vector2>();
         //Setup input for horizontal movement release
         inputAction.PlayerControls.MoveCamera.canceled += ctx => cameraMoveInput = ctx.ReadValue<Vector2>();
+        DisableReticle();
     }
 
     //OnEnable and OnDisable are required for the inputAction class to work
@@ -69,17 +76,14 @@ public class ThirdPersonCameraController : MonoBehaviour
     private void Update()
     {
         //Look at Player
-
+        HorizontalCameraInput();
+        VerticalCameraInput();
 
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
-        transform.LookAt(player.transform.position);
-        HorizontalCameraInput();
-        HorizontalCameraFollow();
-        VerticalCameraInput();
-        VerticalCameraFollow();
+        CameraFollow();
     }
 
 
@@ -95,24 +99,34 @@ public class ThirdPersonCameraController : MonoBehaviour
         }
     }
 
-    internal void HorizontalCameraFollow()
+    internal void CameraFollow()
     {
+        //Horizontal Follow
         Vector2 cameraPosition2D = new Vector2(transform.position.x, transform.position.z);
         Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.z);
-        //The purpose of this function is to move the camera so that it's always with a certain distance of a player
-        //This is 
-        if (Mathf.Abs(Vector3.Distance(player.transform.position, transform.position)) > maxDistanceFromPlayer)
+        float horizontalDistance = Mathf.Abs(Vector2.Distance(cameraPosition2D, playerPosition2D));
+        Vector3 newPosition = new Vector3(0,0,0);
+        float distanceDifference = horizontalDistance - maxDistanceFromPlayer;
+        
+        if (horizontalDistance < maxDistanceFromPlayer+maxDistanceOffset || horizontalDistance > maxDistanceFromPlayer-maxDistanceOffset)
         {
-            //transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
-            Vector3 newPosition = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z);
-            transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+            newPosition = transform.position + new Vector3(transform.forward.x * distanceDifference, 0, transform.forward.z * distanceDifference);
         }
-        if (Mathf.Abs(Vector2.Distance(cameraPosition2D, playerPosition2D)) < minDistanceFromPlayer)
-        {
-            //transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
-            Vector3 newPosition = transform.position + new Vector3(-transform.forward.x, 0, -transform.forward.z);
-            transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
-        }
+        //Vertical Follow
+        //Adjust the min/max camera y position
+        minCameraY = player.transform.position.y;
+        maxCameraY = minCameraY + 5f;
+        //adjust 
+        currentCameraAngleX = maxCameraAngleX * cameraPercentVertical;
+        float absCameraY = maxCameraY - minCameraY;
+        currentCameraY = (absCameraY * cameraPercentVertical) + minCameraY;
+
+        //lerp to new camera position
+        newPosition = new Vector3(newPosition.x, currentCameraY, newPosition.z);
+        transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+        //rotation
+        var targetRotation = Quaternion.LookRotation(player.transform.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5f * Time.deltaTime);
     }
 
     internal void VerticalCameraInput()
@@ -128,7 +142,39 @@ public class ThirdPersonCameraController : MonoBehaviour
 
     }
 
-    internal void VerticalCameraFollow()
+    internal void EnableReticle()
+    {
+        reticle.SetActive(true);
+    }
+
+    internal void DisableReticle()
+    {
+        reticle.SetActive(false);
+    }
+
+    /*internal void HorizontalCameraFollow()
+    {
+    Vector2 cameraPosition2D = new Vector2(transform.position.x, transform.position.z);
+    Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.z);
+    //The purpose of this function is to move the camera so that it's always with a certain distance of a player
+    //This is 
+    if (Mathf.Abs(Vector3.Distance(player.transform.position, transform.position)) > maxDistanceFromPlayer)
+    {
+    //Vector3 newPosition = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z);
+    //transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+    Vector3 newPosition = playerPosition2D + (cameraPosition2D - playerPosition2D).normalized * maxDistanceFromPlayer;
+    transform.position = newPosition;
+    }
+    if (Mathf.Abs(Vector2.Distance(cameraPosition2D, playerPosition2D)) < minDistanceFromPlayer)
+    {
+    //Vector3 newPosition = transform.position + new Vector3(-transform.forward.x, 0, -transform.forward.z);
+    //transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref velocity, smoothTime);
+    Vector3 newPosition = playerPosition2D + (cameraPosition2D - playerPosition2D).normalized * maxDistanceFromPlayer;
+    transform.position = newPosition;
+    }
+    }*/
+
+    /*internal void VerticalCameraFollow()
     {
         //Adjust the min/max camera y position
         minCameraY =  player.transform.position.y;
@@ -145,5 +191,6 @@ public class ThirdPersonCameraController : MonoBehaviour
         Quaternion newRotation = Quaternion.identity;
         newRotation.eulerAngles = new Vector3(currentCameraAngleX,newRotation.eulerAngles.y,newRotation.eulerAngles.z);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.fixedDeltaTime * 0.1f);
-    }
+    }*/
+
 }

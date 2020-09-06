@@ -119,6 +119,11 @@ public class PlayerScript : MonoBehaviour
         weaponScript.FireWeapon();
     }
 
+    internal void StopFireWeapon()
+    {
+        weaponScript.StopFire();
+    }
+
     internal void SwapFromWeapon()
     {
         weaponScript.SwapFromWeapon();
@@ -192,5 +197,14 @@ public class PlayerScript : MonoBehaviour
         return currentCamera;
     }
 
+    public void EnableWeaponScript()
+    {
+        weaponScript.currentWeapon.enabled = true;
+    }
+
+    public void DisableWeaponScript()
+    {
+        weaponScript.currentWeapon.enabled = false;
+    }
 }
 

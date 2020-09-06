@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateJumping : IPlayerState
+public class PlayerStateJumping : PlayerState
 {
     Vector2 mi;
     Vector3 startPosition;
@@ -16,13 +16,13 @@ public class PlayerStateJumping : IPlayerState
         startPosition = pi.GetPlayerTransform().position;
         startTime = Time.time;
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         mi = pi.GetMovementInput();
         jumpInput = pi.GetJumpInput();
         jumpProgress = pi.playerScript.Jump(startPosition, startTime, mi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (jumpInput == 0f || jumpProgress > 1f)
         {

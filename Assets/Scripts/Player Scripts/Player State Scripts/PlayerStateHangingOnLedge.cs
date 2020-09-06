@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateHangingOnLedge : IPlayerState
+public class PlayerStateHangingOnLedge : PlayerState
 {
     Vector2 mi;
     float cancelClimb;
@@ -27,7 +27,7 @@ public class PlayerStateHangingOnLedge : IPlayerState
         //Player cannot jump until they stop pressing the jump input
         canJump = false;
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         mi = pi.GetMovementInput();
         jumpInput = pi.GetJumpInput();
@@ -37,8 +37,10 @@ public class PlayerStateHangingOnLedge : IPlayerState
             canJump = true;
         }
         cancelClimb = pi.GetCancelClimbInput();
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         //first, let's check to see if any ledge that we are 
         //If the player is moving on the horizontal axis, not accidentally

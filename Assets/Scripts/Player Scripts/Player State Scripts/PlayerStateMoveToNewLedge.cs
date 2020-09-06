@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateMoveToNewLedge : IPlayerState
+public class PlayerStateMoveToNewLedge : PlayerState
 {
     //This state automatically moves the player to a new ledge
     GameObject ledge;
@@ -17,11 +17,13 @@ public class PlayerStateMoveToNewLedge : IPlayerState
         startPosition = player.GetPlayerTransform().position;
         startTime = Time.time;
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         //climbProgress = pi.playerScript.ClimbAlongLedge(startPosition, startTime, endPosition);
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (climbProgress >= 1f)
         {

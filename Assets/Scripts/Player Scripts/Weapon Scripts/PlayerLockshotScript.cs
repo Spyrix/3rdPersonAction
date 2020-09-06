@@ -73,6 +73,8 @@ public class PlayerLockshotScript : PlayerWeapon
                     Debug.DrawRay(origins[i], rayDirection, Color.green);
                     //If the gameobject hit is not already a target
                     AddNewTarget(hit.collider.gameObject);
+                    //Swap it's material to the targeted version
+                    
                 }
             }
         }
@@ -85,6 +87,12 @@ public class PlayerLockshotScript : PlayerWeapon
 
     public override void SwapToWeapon()
     {
+
+    }
+    
+    public void ClearTargets()
+    {
+        //This function clears the target list, and turns every target's material in the target list back to normal
 
     }
 
@@ -117,6 +125,11 @@ public class PlayerLockshotScript : PlayerWeapon
             StartCoroutine(WaitForNextProjectile(0));
             canFire = false;
         }
+    }
+
+    public override void StopFire()
+    {
+        
     }
 
     private void HandleCooldown()

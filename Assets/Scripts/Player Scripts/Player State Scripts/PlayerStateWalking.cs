@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateWalking : IPlayerState
+public class PlayerStateWalking : PlayerState
 {
     /*
      * Purpose: To direct the player character in the direction that the player moves the left analog stick.
@@ -17,14 +17,16 @@ public class PlayerStateWalking : IPlayerState
         pi = player;
         Debug.Log("Entering walking state");
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         ai = pi.GetAimInput();
         mi = pi.GetMovementInput();
         ji = pi.GetJumpInput();
         pi.playerScript.GroundMovement(mi);
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (mi.magnitude == 0f)
         {

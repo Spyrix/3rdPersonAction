@@ -28,7 +28,7 @@ public class PlayerInputScript : MonoBehaviour
     internal int playerNumber = 0;
     Rigidbody playerRB;
     InputUser _user;
-    internal IPlayerState currentState;
+    internal PlayerState currentState;
 
     [SerializeField]
     internal float dashCooldownTimer;

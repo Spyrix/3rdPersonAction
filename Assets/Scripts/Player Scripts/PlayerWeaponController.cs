@@ -21,6 +21,15 @@ public class PlayerWeaponController : MonoBehaviour
         }
     }
 
+    public void StopFire()
+    {
+        Debug.Log("Firing Weapon!");
+        if (currentWeapon != null)
+        {
+            currentWeapon.StopFire();
+        }
+    }
+
     public void SwapFromWeapon()
     {
         if (currentWeapon != null)

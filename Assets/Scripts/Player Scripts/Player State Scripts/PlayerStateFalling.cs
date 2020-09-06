@@ -3,7 +3,7 @@ using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-public class PlayerStateFalling : IPlayerState
+public class PlayerStateFalling : PlayerState
 {
     Vector2 mi;
     float jumpInput;
@@ -23,7 +23,7 @@ public class PlayerStateFalling : IPlayerState
         thread.Start();
     }
 
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         mi = pi.GetMovementInput();
         jumpInput = pi.GetJumpInput();
@@ -33,8 +33,10 @@ public class PlayerStateFalling : IPlayerState
         {
             superJumpReady = true;
         }
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (superJumpReady && jumpInput == 1f && pi.GetJumpCount() > 0)
         {

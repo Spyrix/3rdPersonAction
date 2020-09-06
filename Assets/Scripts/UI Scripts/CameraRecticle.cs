@@ -18,7 +18,8 @@ public class CameraRecticle : MonoBehaviour
         CreateShape();
         UpdateMesh();
         //ensure that the reticle is centered
-        transform.position = c.transform.position + new Vector3(0,0,2);
+        transform.position = c.transform.position + new Vector3(0,-2f,2f);
+        Debug.Log(c.transform.position);
     }
 
     // Update is called once per frame

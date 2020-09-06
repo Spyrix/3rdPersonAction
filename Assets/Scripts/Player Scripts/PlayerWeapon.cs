@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class PlayerWeapon : MonoBehaviour
 {
     public abstract void Fire();
+    public abstract void StopFire();
     public abstract void SwapFromWeapon();
     public abstract void SwapToWeapon();
 }

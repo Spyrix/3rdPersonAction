@@ -1,0 +1,30 @@
+GODSBLOOD
+
+Places for a metroidvania game? Anything with chunkable rooms, nice vertical and horizontal spaces to play around in:
+
+Weapon mechanic: A sword that is constantly dripping blood. The player has slain a god of the world, and godsblood is known to have strange properties on items that it touches... such as 
+
+Implement walking up ramps and stairs
+Implement climbing
+	--create playerclimbing state, enterable if the player is 
+	--Use colliders to determine if a player still has a climbable object infront of them.
+	--If they do, enter climbing state.
+	--On entering the state, position player at a constant positon around the climbable object (adjust height)
+	--ledges are objects that work as a network. Each ledge knows the ledges around it
+	--When movement input is given, move//interpolate the player to the next node in the network. 
+Implement wall sliding
+Implement mid air dash
+Implement multi jump
+
+
+TO DO:
+Unit testing
+Snappable terrain
+Use delegates and events
+How to solve issue of objects obscuring view of player?
+
+
+MECHANIC IDEAS:
+
+
+BUGS:

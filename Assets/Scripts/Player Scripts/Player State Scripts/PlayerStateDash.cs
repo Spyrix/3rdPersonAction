@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateDash : IPlayerState
+public class PlayerStateDash : PlayerState
 {
     PlayerInputScript pi;
     float dashLength = 3f;
@@ -18,11 +18,13 @@ public class PlayerStateDash : IPlayerState
         startTime = Time.time;
         pi.gameObject.GetComponent<Rigidbody>().useGravity = false;
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         dashProgress = pi.playerScript.Dash(startPosition, endPosition, startTime);
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (dashProgress >= 1f)
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerStateIdle : IPlayerState
+public class PlayerStateIdle : PlayerState
 {
     /*
      * The player starts in idle, and does not move.
@@ -22,14 +22,16 @@ public class PlayerStateIdle : IPlayerState
     //
     /*If the player is in this state, they will always do whatever is in state update.
      * Which includes accepting new input and */
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         pi.playerScript.Idle();
         mi = pi.GetMovementInput();
         ji = pi.GetJumpInput();
         ai = pi.GetAimInput();
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (mi.magnitude > 0f)
         {

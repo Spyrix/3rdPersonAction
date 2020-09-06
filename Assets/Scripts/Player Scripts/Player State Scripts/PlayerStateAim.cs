@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStateAim : IPlayerState
+public class PlayerStateAim : PlayerState
 {
     PlayerInputScript pi;
     Vector2 mi;
@@ -13,12 +13,14 @@ public class PlayerStateAim : IPlayerState
     public PlayerStateAim(PlayerInputScript player)
     {
         pi = player;
+        pi.playerScript.EnableWeaponScript();
         pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().enabled = true;
+        pi.playerScript.GetCurrentCamera().GetComponent<ThirdPersonCameraController>().EnableReticle();
         pi.playerScript.GetCurrentCamera().GetComponent<ThirdPersonCameraController>().enabled = false;
         pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().AttachToPlayer();
         Debug.Log("Entering aim state");
     }
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         fi = pi.GetFireWeaponInput();
         mi = pi.GetMovementInput();
@@ -30,16 +32,24 @@ public class PlayerStateAim : IPlayerState
         {
             pi.playerScript.FireCurrentWeapon();
         }
+        else
+        {
+            pi.playerScript.StopFireWeapon();
+        }
 
         pi.playerScript.Strafe(mi,rsi);
+        //Default playerstate behavior to swap weapons in any state
+        HandleWeaponSwapInput(pi);
     }
-    public void HandleInput()
+    public override void HandleInput()
     {
         if (ai < 1f)
         {
+            pi.playerScript.DisableWeaponScript();
             pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().FreeCamera();
             pi.playerScript.GetCurrentCamera().GetComponent<OverShoulderCameraController>().enabled = false;
             pi.playerScript.GetCurrentCamera().GetComponent<ThirdPersonCameraController>().enabled = true;
+            pi.playerScript.GetCurrentCamera().GetComponent<ThirdPersonCameraController>().DisableReticle();
             pi.playerScript.SwapFromWeapon();
             pi.currentState = new PlayerStateIdle(pi);
         }
