@@ -85,32 +85,44 @@ public class PlayerMovementScript : MonoBehaviour
         playerRB.MovePosition(transform.position + (directionVector * fowardMovement));
     }
 
-    internal void InstantPlayerRotation(Vector2 movementVector)
+    internal void SmoothPlayerRotation(Vector2 movementVector)
     {
         //We need to rotate the movement vector to ensure that it's pointing in the direction of the camera
         //use y axis
         Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, playerScript.GetCurrentCamera().transform);
+
+        // The step size is equal to speed times frame time.
+        var step = 10 * Time.deltaTime;
+
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
         {
-            //playerRB.MoveRotation(Quaternion.LookRotation(new Vector3(movementVector.x, 0f, movementVector.y)));
-            playerRB.MoveRotation(Quaternion.LookRotation(directionVector));
+            //playerRB.MoveRotation(Quaternion.LookRotation(directionVector));
+            playerRB.rotation = Quaternion.Slerp(playerRB.rotation, Quaternion.LookRotation(directionVector), 15f * Time.deltaTime);
         }
             
         //Debug.Log("debug transform forward"+playerTransform.forward);
     }
 
-    internal void SmoothPlayerRotation(Vector2 movementVector)
+    internal void StrafeSmoothPlayerRotation(Vector2 movementVector)
     {
+        //We need to rotate the movement vector to ensure that it's pointing in the direction of the camera
+        //use y axis
+        Vector3 directionVector = HelperFunctions.ConvertMoveInputToCam(movementVector, playerScript.GetCurrentCamera().transform);
+
+        // The step size is equal to speed times frame time.
+        var step = 10 * Time.deltaTime;
+
         //Rotate player, so long as the vector isn't 0. If it's zero, it just resets to facing in the default.
         if (movementVector.x != 0f || movementVector.y != 0f)
         {
-            Quaternion calculatedRotation = new Quaternion();
-            calculatedRotation.eulerAngles = new Vector3(0, movementVector.x * 15 + playerRB.rotation.eulerAngles.y, 0);
-            Quaternion newRotation = Quaternion.Lerp(playerRB.rotation, calculatedRotation, Time.fixedDeltaTime * smoothRotationSpeed);
-            playerRB.MoveRotation(newRotation);
+            //playerRB.MoveRotation(Quaternion.LookRotation(directionVector));
+            playerRB.rotation = Quaternion.Slerp(playerRB.rotation, Quaternion.LookRotation(directionVector), 2f * Time.deltaTime);
         }
+
+        //Debug.Log("debug transform forward"+playerTransform.forward);
     }
+
 
     internal float Jump(Vector3 startPosition, float startTime, Vector2 movementInput)
     {
@@ -123,7 +135,7 @@ public class PlayerMovementScript : MonoBehaviour
         transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
        // playerRB.MovePosition(endPosition);
         //Allow the player to move in the air because it's fun
-        InstantPlayerRotation(movementInput);
+        SmoothPlayerRotation(movementInput);
 
         //move player
         CalculateForward();

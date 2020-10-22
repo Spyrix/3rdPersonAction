@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerInputScript))]
 public class PlayerInventoryController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    //PlayerInventoryGraphics graphicsScript;
+    [SerializeField]
+    PlayerInputScript input;
+
+    List<GameObject> inventorySpace;
+    int inventorySize;
+
+    void Awake()
     {
-        
+        inventorySize = 10;
     }
 
     // Update is called once per frame
@@ -15,4 +22,6 @@ public class PlayerInventoryController : MonoBehaviour
     {
         
     }
+    
+
 }

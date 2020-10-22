@@ -69,7 +69,7 @@ public class PlayerScript : MonoBehaviour
     internal void GroundMovement(Vector2 movementVector)
     {
        // movementScript.InstantPlayerRotation(movementVector);
-        movementScript.InstantPlayerRotation(movementVector);
+        movementScript.SmoothPlayerRotation(movementVector);
         movementScript.GroundMovement(movementVector);
         //Debug.Log("movementinput float:"+ movementInput);
        //animationScript.EnterWalkingState(movementInput);
@@ -79,7 +79,7 @@ public class PlayerScript : MonoBehaviour
     internal void Strafe(Vector2 movementVector, Vector2 rotationVector)
     {
         movementScript.Strafe(movementVector);
-        movementScript.SmoothPlayerRotation(rotationVector);
+        movementScript.StrafeSmoothPlayerRotation(rotationVector);
         //Debug.Log("movementinput float:"+ movementInput);
         //animationScript.EnterWalkingState(movementInput);
     }

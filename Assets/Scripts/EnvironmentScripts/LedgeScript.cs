@@ -128,4 +128,11 @@ public class LedgeScript : MonoBehaviour
         }
         return climbOver;
     }
+
+    public Vector3 GetDirectionVectorOfLedge()
+    {
+        Vector3 direction = leftMostPoint.transform.position - rightMostPoint.transform.position;
+        direction = direction.normalized;
+        return direction;
+    }
 }

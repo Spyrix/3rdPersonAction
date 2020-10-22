@@ -44,7 +44,8 @@ public class PlayerStateHangingOnLedge : PlayerState
     {
         //first, let's check to see if any ledge that we are 
         //If the player is moving on the horizontal axis, not accidentally
-        if (Mathf.Abs(mi.x) >= 0.2f)
+        Vector2 fixedMI = HelperFunctions.ConvertMoveInputToCam(mi, pi.playerScript.GetCurrentCamera().transform);
+        if (Mathf.Abs(fixedMI.x) >= 0.2f || Mathf.Abs(fixedMI.y) >= 0.2f)
         {
             pi.GetRigidbody().constraints = pi.GetFreezeAllRotation();
             pi.currentState = new PlayerStateClimbing(pi, ledge);
