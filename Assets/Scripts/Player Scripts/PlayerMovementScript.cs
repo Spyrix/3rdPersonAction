@@ -64,7 +64,7 @@ public class PlayerMovementScript : MonoBehaviour
 
     internal void GroundMovement(Vector2 movementVector2)
     {
-        CalculateForward();
+        calculatedForward = PlayerHelperFunctions.CalculateForward(playerRB, height, hitInfo, groundLayer);
         float forwardMovement = movementSpeed * movementVector2.magnitude * Time.fixedDeltaTime;
         //Vector3 movementVector = new Vector3(movementVector2.x, 0f, movementVector2.y);
         //move player
@@ -100,7 +100,7 @@ public class PlayerMovementScript : MonoBehaviour
             //playerRB.MoveRotation(Quaternion.LookRotation(directionVector));
             playerRB.rotation = Quaternion.Slerp(playerRB.rotation, Quaternion.LookRotation(directionVector), 15f * Time.deltaTime);
         }
-            
+
         //Debug.Log("debug transform forward"+playerTransform.forward);
     }
 
@@ -131,14 +131,14 @@ public class PlayerMovementScript : MonoBehaviour
         //we calculate a new start position to determine if the player has moved from the original start position
         Vector3 newStartPosition = new Vector3(transform.position.x, startPosition.y, transform.position.z);
         Vector3 endPosition = new Vector3(newStartPosition.x, newStartPosition.y + maxJumpHeight, newStartPosition.z);
-        
+
         transform.position = Vector3.Lerp(newStartPosition, endPosition, fractionOfJourney);
        // playerRB.MovePosition(endPosition);
         //Allow the player to move in the air because it's fun
         SmoothPlayerRotation(movementInput);
 
         //move player
-        CalculateForward();
+        calculatedForward = PlayerHelperFunctions.CalculateForward(playerRB, height, hitInfo, groundLayer);
         float forwardMovement = movementSpeed * movementInput.magnitude * Time.deltaTime;
         transform.Translate(calculatedForward*forwardMovement, Space.World);
         //GroundMovement(movementInput);
@@ -153,24 +153,7 @@ public class PlayerMovementScript : MonoBehaviour
         return fractionOfJourney;
     }
 
-    internal float Dash(Vector3 startPos, Vector3 endPos, float startTime)
-    {
-        CalculateForward();
-        /*float distCovered = (Time.time - startTime) * dashSpeed;
-        float fractionOfJourney = distCovered / (Vector3.Distance(startPos,endPos));
-        transform.position = Vector3.Lerp(startPos, endPos, fractionOfJourney);*/
-        dashTimer += Time.fixedDeltaTime;
-        float fractionOfJourney = dashTimer / dashTimerMax;
-        if (dashTimer >= dashTimerMax)
-        {
-            dashTimer = 0f;
-        }
-        float forwardMovement = dashSpeed * Time.fixedDeltaTime;
-        playerRB.MovePosition(transform.position+(calculatedForward * forwardMovement));
-        return fractionOfJourney;
-    }
-
-    internal void CalculateForward()
+    /*internal void CalculateForward()
     {
         if (Physics.Raycast(new Vector3(playerRB.transform.position.x, playerRB.transform.position.y - height / 1.5f, playerRB.transform.position.z), -playerRB.transform.up, out hitInfo, 1f, groundLayer))
         {
@@ -180,7 +163,7 @@ public class PlayerMovementScript : MonoBehaviour
         {
             calculatedForward = playerRB.transform.forward;
         }
-    }
+    }*/
 
     internal bool PlayerHitCeiling()
     {

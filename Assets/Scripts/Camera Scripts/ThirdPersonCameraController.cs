@@ -47,11 +47,11 @@ public class ThirdPersonCameraController : MonoBehaviour
     {
         maxDistanceOffset = .5f;
         smoothTime = .15f;
-        cameraSpeedY = .2f;
+        cameraSpeedY = .4f;
         cameraPercentVertical = 0f;
         minCameraAngleX = 0;
         maxCameraAngleX = 45;
-        cameraSpeedX = 1.5f;
+        cameraSpeedX = 4f;
         maxDistanceFromPlayer = 10f;
         minDistanceFromPlayer = 9f;
         inputAction = new PlayerInputActions();
@@ -107,7 +107,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         float horizontalDistance = Mathf.Abs(Vector2.Distance(cameraPosition2D, playerPosition2D));
         Vector3 newPosition = new Vector3(0,0,0);
         float distanceDifference = horizontalDistance - maxDistanceFromPlayer;
-        
+
         if (horizontalDistance < maxDistanceFromPlayer+maxDistanceOffset || horizontalDistance > maxDistanceFromPlayer-maxDistanceOffset)
         {
             newPosition = transform.position + new Vector3(transform.forward.x * distanceDifference, 0, transform.forward.z * distanceDifference);
@@ -116,7 +116,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         //Adjust the min/max camera y position
         minCameraY = player.transform.position.y;
         maxCameraY = minCameraY + 5f;
-        //adjust 
+        //adjust
         currentCameraAngleX = maxCameraAngleX * cameraPercentVertical;
         float absCameraY = maxCameraY - minCameraY;
         currentCameraY = (absCameraY * cameraPercentVertical) + minCameraY;
@@ -157,7 +157,7 @@ public class ThirdPersonCameraController : MonoBehaviour
     Vector2 cameraPosition2D = new Vector2(transform.position.x, transform.position.z);
     Vector2 playerPosition2D = new Vector2(player.transform.position.x, player.transform.position.z);
     //The purpose of this function is to move the camera so that it's always with a certain distance of a player
-    //This is 
+    //This is
     if (Mathf.Abs(Vector3.Distance(player.transform.position, transform.position)) > maxDistanceFromPlayer)
     {
     //Vector3 newPosition = transform.position + new Vector3(transform.forward.x, 0, transform.forward.z);
@@ -179,7 +179,7 @@ public class ThirdPersonCameraController : MonoBehaviour
         //Adjust the min/max camera y position
         minCameraY =  player.transform.position.y;
         maxCameraY = minCameraY + 5f;
-        //adjust 
+        //adjust
         currentCameraAngleX = maxCameraAngleX * cameraPercentVertical;
         float absCameraY = maxCameraY - minCameraY;
         currentCameraY = (absCameraY * cameraPercentVertical) + minCameraY;

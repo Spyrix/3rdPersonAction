@@ -7,7 +7,7 @@ using UnityEngine;
  * This is the manager script for controlling everything that the player can do.
  * If the input script wants to talk to the movement script, it must go through this script, for example.
  * This is to segregate code and make sure that we know exactly what is responsible for doing what.
- * 
+ *
  * In theory, attaching this script to any player character gameobject should make it controllable by the player.
  */
 [RequireComponent(typeof(PlayerInputScript))]
@@ -15,6 +15,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerCollisionScript))]
 [RequireComponent(typeof(PlayerClimbingScript))]
 [RequireComponent(typeof(PlayerWeaponController))]
+[RequireComponent(typeof(PlayerDashScript))]
 //[RequireComponent(typeof(PlayerAnimation))]
 //[RequireComponent(typeof(PlayerHealthController))]
 [RequireComponent(typeof(MeshCollider))]
@@ -36,6 +37,8 @@ public class PlayerScript : MonoBehaviour
     internal PlayerCollisionScript collisionScript;
     [SerializeField]
     internal Transform playerTransform;
+    [SerializeField]
+    internal PlayerDashScript dashScript;
     //[SerializeField]
     //internal PlayerAnimation animationScript;
     //[SerializeField]
@@ -163,7 +166,7 @@ public class PlayerScript : MonoBehaviour
 
     internal float Dash(Vector3 startPos, Vector3 endPos, float startTime)
     {
-        return movementScript.Dash(startPos, endPos, startTime);
+        return dashScript.Dash(startPos, endPos, startTime);
     }
 
     public void SetPlayerPosition(Vector3 pos)
@@ -207,4 +210,3 @@ public class PlayerScript : MonoBehaviour
         weaponScript.currentWeapon.enabled = false;
     }
 }
-
